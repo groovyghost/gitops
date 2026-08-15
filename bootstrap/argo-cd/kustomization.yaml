@@ -3,3 +3,17 @@ kind: Kustomization
 namespace: argocd
 resources:
 - https://github.com/argoproj/argo-cd/manifests/base?ref=v3.5.1
+configMapGenerator:
+- behavior: merge
+  literals:
+  - kustomize.buildOptions="--enable-alpha-plugins --enable-helm"
+  - |
+    repository.credentials=- passwordSecret:
+        key: git_token
+        name: autopilot-secret
+      url: https://github.com/
+      usernameSecret:
+        key: git_username
+        name: autopilot-secret
+  name: argocd-cm
+
