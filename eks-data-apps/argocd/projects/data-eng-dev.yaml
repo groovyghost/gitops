@@ -1,0 +1,15 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: data-eng-dev
+  namespace: argocd
+spec:
+  description: Data Engineering project for Dev environment
+  sourceRepos:
+    - 'https://github.com/my-org/data-eng-gitops.git'
+  destinations:
+    - namespace: 'data-eng-dev'
+      server: 'https://kubernetes.default.svc'
+  clusterResourceWhitelist:
+    - group: ''
+      kind: Namespace

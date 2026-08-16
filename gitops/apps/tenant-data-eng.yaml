@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tenant-data-eng
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/my-org/gitops.git'
+    targetRevision: main
+    path: eks-data-apps/argocd
+    directory:
+      recurse: true
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

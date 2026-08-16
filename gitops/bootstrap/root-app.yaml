@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: root-app
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/my-org/gitops.git'
+    targetRevision: main
+    path: gitops/apps
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: argocd
+  # Prevents root-app showing OutOfSync due to live status changes on child Applications
+  ignoreDifferences:
+    - group: argoproj.io
+      kind: Application
+      jsonPointers:
+        - /status
+        - /operation
+  syncPolicy:
+    automated:
+      # Prune disabled to prevent accidental cascading deletion if apps/ is temporarily empty
+      prune: false
+      selfHeal: true

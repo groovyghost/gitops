@@ -1,0 +1,36 @@
+# Override generic chart defaults
+replicaCount: 2
+
+image:
+  repository: my-registry.com/data-eng/data-pipeline-api
+  tag: "v1.2.0-dev"
+  pullPolicy: Always
+
+serviceAccount:
+  create: true
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/data-pipeline-dev-role
+
+service:
+  type: ClusterIP
+  port: 8080
+
+ingress:
+  enabled: true
+  className: nginx
+  host: data-pipeline-api.dev.my-org.com
+  path: /
+
+env:
+  - name: LOG_LEVEL
+    value: "DEBUG"
+  - name: DB_HOST
+    value: "dev-db.internal"
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

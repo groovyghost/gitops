@@ -1,0 +1,15 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: data-eng-prod
+  namespace: argocd
+spec:
+  description: Data Engineering project for Prod environment
+  sourceRepos:
+    - 'https://github.com/my-org/data-eng-gitops.git'
+  destinations:
+    - namespace: 'data-eng-prod'
+      server: 'https://kubernetes.default.svc'
+  clusterResourceWhitelist:
+    - group: ''
+      kind: Namespace

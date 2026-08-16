@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: data-eng-apps-qas
+  namespace: argocd
+spec:
+  generators:
+    - git:
+        repoURL: 'https://github.com/my-org/data-eng-gitops.git'
+        revision: qas
+        directories:
+          - path: eks-data-apps/applications/*
+  template:
+    metadata:
+      name: '{{path.basename}}-qas'
+      labels:
+        environment: qas
+        team: data-eng
+    spec:
+      project: data-eng-qas
+      source:
+        repoURL: 'https://github.com/my-org/data-eng-gitops.git'
+        targetRevision: qas
+        path: eks-data-apps/charts/generic-app
+        helm:
+          valueFiles:
+            - ../../../{{path}}/values.yaml
+      destination:
+        server: 'https://kubernetes.default.svc'
+        namespace: data-eng-qas
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true

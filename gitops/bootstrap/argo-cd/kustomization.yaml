@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: argocd
+resources:
+  # To upgrade ArgoCD: change the ref= value below to the desired version tag.
+  # Example: ?ref=v3.5.1 -> ?ref=v3.6.0, then commit and push.
+  - https://github.com/argoproj/argo-cd/manifests/base?ref=v3.5.1
+configMapGenerator:
+  - name: argocd-cmd-params-cm
+    behavior: merge
+    literals:
+      - kustomize.buildOptions=--enable-alpha-plugins --enable-helm
